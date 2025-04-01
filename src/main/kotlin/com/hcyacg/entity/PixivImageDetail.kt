@@ -1,8 +1,29 @@
 package com.hcyacg.entity
 
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+
+/**
+ * 一个自定义序列器，用来对付把布尔值加上引号变成字符串的神必api
+ **/
+object BooleanFromStringSerializer : KSerializer<Boolean> {
+    override val descriptor = PrimitiveSerialDescriptor("BooleanFromString", PrimitiveKind.STRING)
+
+    override fun deserialize(decoder: Decoder): Boolean {
+        val string = decoder.decodeString()
+        return (string == "true" || string == "True")  // 如果字符串是 "true" 或 "True"，返回 true，否则返回 false
+    }
+
+    override fun serialize(encoder: Encoder, value: Boolean) {
+        encoder.encodeBoolean(value)  // 反序列化
+    }
+}
 
 @Serializable
 data class PixivImageDetail(
@@ -21,9 +42,9 @@ data class PixivImageDetail(
     @SerialName("pageCount")
     val pageCount: Int? = 0,
     @SerialName("width")
-    val width: Int? = 0,
+    val width: Double ? = 0.0,
     @SerialName("height")
-    val height: Int? = 0,
+    val height: Double ? = 0.0,
     @SerialName("sanityLevel")
     val sanityLevel: Int? = 0,
     @SerialName("xRestrict")
@@ -33,10 +54,13 @@ data class PixivImageDetail(
     @SerialName("totalBookmarks")
     val totalBookmarks: Int? = 0,
     @SerialName("isBookmarked")
+    @Serializable(with = BooleanFromStringSerializer::class)
     val isBookmarked: Boolean? = false,
     @SerialName("visible")
+    @Serializable(with = BooleanFromStringSerializer::class)
     val visible: Boolean? = true,
     @SerialName("isMuted")
+    @Serializable(with = BooleanFromStringSerializer::class)
     val isMuted: Boolean? = false,
     @SerialName("totalComments")
     val totalComments: Int? = 0,

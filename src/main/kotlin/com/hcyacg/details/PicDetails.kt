@@ -51,24 +51,17 @@ object PicDetails {
          */
         var id: String? = null
         var page: String?
-        try {
-            page =
-                messageChain.contentToString().replace(Command.getDetailOfId, "").replace(" ", "").split("-")[1]
-        } catch (e: Exception) {
-            logger.error { e.message }
-            id = messageChain.contentToString().replace(Command.getDetailOfId, "").replace(" ", "")
+        val rawInput = messageChain.contentToString().replace(Command.getDetailOfId, "").trim()
+        val parts = rawInput.split("-")
+
+        if (parts.size == 2) {
+            id = parts[0].trim()
+            page = parts[1].trim()
+        } else {
+            id = rawInput
             page = "1"
         }
 
-        if (null == id) {
-            try {
-                id = messageChain.content.replace(Command.getDetailOfId, "").replace(" ", "").split("-")[0]
-            } catch (e: Exception) {
-                logger.error { e.message }
-                event.subject.sendMessage("请输入正确的插画id  ${Command.getDetailOfId}id")
-                return
-            }
-        }
 
 
         if (StringUtils.isBlank(id)) {
@@ -77,12 +70,7 @@ object PicDetails {
         }
 
 
-        /**
-         * 设置出现异常时默认的张数
-         */
-        if (null == page || page.toInt() <= 0) {
-            page = "1"
-        }
+
 
         val detail = getDetailOfId(id)
 
@@ -293,7 +281,21 @@ object PicDetails {
                 headers.build()
             ) ?: return null
 
-            val tempData = data.jsonObject["data"]?.jsonObject?.get("data")
+            //val tempData = data.jsonObject["data"]?.jsonObject?.get("data")
+
+            val tempData: JsonElement? = try {
+                val outerData = data.jsonObject["data"]?.jsonObject
+                if (outerData == null) {
+                    logger.error { "Missing 'data' key in the JSON object" }
+                    null
+                } else {
+                    outerData
+                }
+            } catch (e: Exception) {
+                logger.error { "Error parsing JSON: ${e.message}" }
+                null
+            }
+
 
             return tempData?.let<JsonElement, PixivImageDetail> { json.decodeFromJsonElement(it) }
         } catch (e: Exception) {
