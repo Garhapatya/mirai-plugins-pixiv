@@ -1,1 +1,1 @@
-rootProject.name = "pixiv"
+rootProject.name = "re-pixiv"
