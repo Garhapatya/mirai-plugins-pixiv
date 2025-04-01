@@ -96,13 +96,13 @@ object PicDetails {
             return
         }
 
-        val picId = detail.id
+        val picId = detail.illust
         val title = detail.title
         val type = detail.type
 
         val author = detail.user!!.name
         val authorId = detail.user.id
-        var large = detail.imageUrls?.large
+        var large = detail.large
         val pageCount = detail.pageCount!!
         val sanityLevel = detail.sanityLevel
         if (sanityLevel == 6 && Setting.groups.indexOf(event.group.id.toString()) < 0) {
@@ -160,7 +160,7 @@ object PicDetails {
         }
 
         /**
-         * 通过张数判断读取哪个json数据
+         * 读取图片url
          */
 
         if (Config.forward.imageToForward && page.toInt() == 1){
@@ -176,10 +176,10 @@ object PicDetails {
                         .plus("画师ID: $authorId")
                 )
             )
-            if (null != detail.metaPages){
-                detail.metaPages.forEach {
+            if (null != detail.originals){
+                detail.originals.forEach {
                     val toExternalResource = if (sanityLevel == 6 && Config.lowPoly){
-                        val byte = ImageUtil.getImage(it.imageUrls?.original!!.replace("i.pximg.net", "i.acgmx.com"),CacheUtil.Type.PIXIV).toByteArray()
+                        val byte = ImageUtil.getImage(it.url!!.replace("i.pximg.net", "i.acgmx.com"),CacheUtil.Type.PIXIV).toByteArray()
                         LowPoly.generate(
                             ByteArrayInputStream(byte),
                             200,
@@ -190,7 +190,7 @@ object PicDetails {
                             200
                         ).toByteArray().toExternalResource()
                     }else{
-                        ImageUtil.getImage(it.imageUrls?.original!!.replace("i.pximg.net", "i.acgmx.com"),CacheUtil.Type.PIXIV).toByteArray().toExternalResource()
+                        ImageUtil.getImage(it.url!!.replace("i.pximg.net", "i.acgmx.com"),CacheUtil.Type.PIXIV).toByteArray().toExternalResource()
                     }
 
 
@@ -207,38 +207,6 @@ object PicDetails {
                     withContext(Dispatchers.IO) {
                         toExternalResource.close()
                     }
-                }
-            }
-
-            if (null != detail.metaSinglePage && detail.metaSinglePage.originalImageUrl?.isNotBlank() == true){
-
-                val toExternalResource = if (sanityLevel == 6 && Config.lowPoly){
-                    val byte = ImageUtil.getImage(detail.metaSinglePage.originalImageUrl.replace("i.pximg.net", "i.acgmx.com"),CacheUtil.Type.PIXIV).toByteArray()
-                    LowPoly.generate(
-                        ByteArrayInputStream(byte),
-                        200,
-                        1F,
-                        true,
-                        "png",
-                        false,
-                        200
-                    ).toByteArray().toExternalResource()
-                }else{
-                    ImageUtil.getImage(detail.metaSinglePage.originalImageUrl.replace("i.pximg.net", "i.acgmx.com"),CacheUtil.Type.PIXIV).toByteArray().toExternalResource()
-                }
-
-                val imageId: String = toExternalResource.uploadAsImage(event.group).imageId
-                nodes.add(
-                    ForwardMessage.Node(
-                        senderId = event.bot.id,
-                        senderName = event.bot.nameCardOrNick,
-                        time = System.currentTimeMillis().toInt(),
-                        message = Image(imageId)
-                    )
-                )
-
-                withContext(Dispatchers.IO) {
-                    toExternalResource.close()
                 }
             }
 
@@ -264,11 +232,7 @@ object PicDetails {
             return
         }
 
-        large = if (pageCount > 1) {
-            detail.metaPages!![page.toInt() - 1].imageUrls!!.original
-        } else {
-            detail.metaSinglePage!!.originalImageUrl
-        }
+        large = detail.originals!![page.toInt() - 1].url
 
         val toExternalResource = if (sanityLevel == 6 && Config.lowPoly){
             val byte = ImageUtil.getImage(large!!.replace("i.pximg.net", "i.acgmx.com"),CacheUtil.Type.PIXIV).toByteArray()
@@ -324,12 +288,12 @@ object PicDetails {
         try {
             val data = request(
                 Companion.Method.GET,
-                "https://api.acgmx.com/illusts/detail?illustId=$id&reduction=true",
+                "https://api.acgmx.com/illusts/detail?illustId=$id",
                 requestBody,
                 headers.build()
             ) ?: return null
 
-            val tempData = data.jsonObject["data"]?.jsonObject?.get("illust")
+            val tempData = data.jsonObject["data"]?.jsonObject?.get("data")
 
             return tempData?.let<JsonElement, PixivImageDetail> { json.decodeFromJsonElement(it) }
         } catch (e: Exception) {

@@ -6,115 +6,77 @@ import kotlinx.serialization.SerialName
 
 @Serializable
 data class PixivImageDetail(
-    @SerialName("caption")
-    val caption: String? = "",
-    @SerialName("create_date")
-    val createDate: String? = "",
-    @SerialName("height")
-    val height: Int? = 0,
-    @SerialName("id")
-    val id: Int? = 0,
-    @SerialName("image_urls")
-    val imageUrls: ImageUrls? = ImageUrls(),
-    @SerialName("is_bookmarked")
-    val isBookmarked: Boolean? = false,
-    @SerialName("is_muted")
-    val isMuted: Boolean? = false,
-    @SerialName("meta_pages")
-    val metaPages: List<MetaPage>? = listOf(),
-    @SerialName("meta_single_page")
-    val metaSinglePage: MetaSinglePage? = MetaSinglePage(),
-    @SerialName("page_count")
-    val pageCount: Int? = 0,
-    @SerialName("restrict")
-    val restrict: Int? = 0,
-    @SerialName("sanity_level")
-    val sanityLevel: Int? = 0,
-//    @SerialName("series")
-//    val series: Any? = Any(),
-    @SerialName("tags")
-    val tags: List<Tag>? = listOf(),
+    @SerialName("illust")
+    val illust: String? = "",
     @SerialName("title")
     val title: String? = "",
-    @SerialName("tools")
-    val tools: List<String>? = listOf(),
-    @SerialName("total_bookmarks")
-    val totalBookmarks: Int? = 0,
-    @SerialName("total_view")
-    val totalView: Int? = 0,
     @SerialName("type")
     val type: String? = "",
-    @SerialName("user")
-    val user: User? = User(),
-    @SerialName("visible")
-    val visible: Boolean? = false,
+    @SerialName("caption")
+    val caption: String? = "",
+    @SerialName("restrict")
+    val restrict: Int? = 0,
+    @SerialName("createDate")
+    val createDate: String? = "",
+    @SerialName("pageCount")
+    val pageCount: Int? = 0,
     @SerialName("width")
     val width: Int? = 0,
-    @SerialName("x_restrict")
-    val xRestrict: Int? = 0
-)
-
-@Serializable
-data class ImageUrls(
+    @SerialName("height")
+    val height: Int? = 0,
+    @SerialName("sanityLevel")
+    val sanityLevel: Int? = 0,
+    @SerialName("xRestrict")
+    val xRestrict: Int? = 0,
+    @SerialName("totalView")
+    val totalView: Int? = 0,
+    @SerialName("totalBookmarks")
+    val totalBookmarks: Int? = 0,
+    @SerialName("isBookmarked")
+    val isBookmarked: Boolean? = false,
+    @SerialName("visible")
+    val visible: Boolean? = true,
+    @SerialName("isMuted")
+    val isMuted: Boolean? = false,
+    @SerialName("totalComments")
+    val totalComments: Int? = 0,
     @SerialName("large")
     val large: String? = "",
-    @SerialName("medium")
-    val medium: String? = "",
-    @SerialName("square_medium")
-    val squareMedium: String? = ""
+    @SerialName("user")
+    val user: User? = User(),
+    @SerialName("tags")
+    val tags: List<Tag>? = listOf(),
+    @SerialName("originals")
+    val originals: List<Original>? = listOf(),
 )
 
 @Serializable
-data class MetaPage(
-    @SerialName("image_urls")
-    val imageUrls: ImageUrlsX? = ImageUrlsX()
-)
-
-@Serializable
-data class MetaSinglePage(
-    @SerialName("original_image_url")
-    val originalImageUrl: String? = ""
+data class User(
+    @SerialName("id")
+    val id: Int? = 0,
+    @SerialName("name")
+    val name: String? = "",
+    @SerialName("account")
+    val account: String? = "",
+    @SerialName("profileImageUrls")
+    val profileImageUrls: String? = "",
+    @SerialName("is_followed")
+    val isFollowed: Boolean? = false,
 )
 
 @Serializable
 data class Tag(
     @SerialName("name")
     val name: String? = "",
-    @SerialName("translated_name")
-    val translatedName: String? = ""
 )
 
 @Serializable
-data class User(
-    @SerialName("account")
-    val account: String? = "",
-    @SerialName("id")
-    val id: Int? = 0,
-    @SerialName("is_followed")
-    val isFollowed: Boolean? = false,
-    @SerialName("name")
-    val name: String? = "",
-    @SerialName("profile_image_urls")
-    val profileImageUrls: ProfileImageUrls? = ProfileImageUrls()
+data class Original(
+    @SerialName("url")
+    val url: String? = "",
 )
 
-@Serializable
-data class ImageUrlsX(
-    @SerialName("large")
-    val large: String? = "",
-    @SerialName("medium")
-    val medium: String? = "",
-    @SerialName("original")
-    val original: String? = "",
-    @SerialName("square_medium")
-    val squareMedium: String? = ""
-)
 
-@Serializable
-data class ProfileImageUrls(
-    @SerialName("medium")
-    val medium: String? = ""
-)
 //
 //object MetaPagesSerializer : JsonTransformingSerializer<List<>>(List.serializer()) {
 //    // If response is an array, then return a empty Icon
