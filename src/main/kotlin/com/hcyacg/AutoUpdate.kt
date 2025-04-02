@@ -20,7 +20,7 @@ import java.util.*
  * 自动更新
  */
 object AutoUpdate {
-    const val githubUrl = "https://api.github.com/repos/Nekoer/mirai-plugins-pixiv/releases?per_page=1"
+    const val githubUrl = "https://api.github.com/repos/Garhapatya/mirai-plugins-pixiv/releases?per_page=1"
     private val headers = Headers.Builder()
     private val requestBody: RequestBody? = null
     private val logger by logger()
