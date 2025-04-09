@@ -4,7 +4,7 @@
 
 
 
-针对[本体](https://github.com/Nekoer/mirai-plugins-pixiv)〇18内容的排行榜和详细数据部分需要充值会员使用进行了调整，换用HiBiapi[https://github.com/mixmoe/HibiAPI]
+针对[本体](https://github.com/Nekoer/mirai-plugins-pixiv)〇18内容的排行榜和详细数据部分需要充值会员使用进行了调整，换用HibiAPI[https://github.com/mixmoe/HibiAPI]
 
 \#2025.3.31:还没改完
 
