@@ -27,78 +27,136 @@ object BooleanFromStringSerializer : KSerializer<Boolean> {
 
 @Serializable
 data class PixivImageDetail(
-    @SerialName("illust")
-    val illust: String? = "",
+    @SerialName("id")
+    val id: Int? = null,
     @SerialName("title")
     val title: String? = "",
     @SerialName("type")
     val type: String? = "",
+    @SerialName("image_urls")
+    val imageUrls: ImageUrls? = ImageUrls(),
     @SerialName("caption")
     val caption: String? = "",
     @SerialName("restrict")
     val restrict: Int? = 0,
-    @SerialName("createDate")
+    @SerialName("user")
+    val user: User? = User(),
+    @SerialName("tags")
+    val tags: List<Tag>? = listOf(),
+    @SerialName("Tools")
+    val tools: List<String>? = listOf(),
+    @SerialName("create_date")
     val createDate: String? = "",
-    @SerialName("pageCount")
+    @SerialName("page_count")
     val pageCount: Int? = 0,
     @SerialName("width")
     val width: Double ? = 0.0,
     @SerialName("height")
     val height: Double ? = 0.0,
-    @SerialName("sanityLevel")
+    @SerialName("sanity_level")
     val sanityLevel: Int? = 0,
-    @SerialName("xRestrict")
+    @SerialName("x_restrict")
     val xRestrict: Int? = 0,
-    @SerialName("totalView")
+    @SerialName("series")
+    val series: Series? = Series(),
+    @SerialName("meta_single_page")
+    val metaSinglePage: MetaSinglePage? = MetaSinglePage(),
+    @SerialName("meta_pages")
+    val metaPages: List<MetaPage>? = listOf(),
+    @SerialName("total_view")
     val totalView: Int? = 0,
-    @SerialName("totalBookmarks")
+    @SerialName("total_bookmarks")
     val totalBookmarks: Int? = 0,
-    @SerialName("isBookmarked")
+    @SerialName("is_bookmarked")
     @Serializable(with = BooleanFromStringSerializer::class)
     val isBookmarked: Boolean? = false,
     @SerialName("visible")
     @Serializable(with = BooleanFromStringSerializer::class)
     val visible: Boolean? = true,
-    @SerialName("isMuted")
+    @SerialName("is_muted")
     @Serializable(with = BooleanFromStringSerializer::class)
     val isMuted: Boolean? = false,
-    @SerialName("totalComments")
+    @SerialName("total_comments")
     val totalComments: Int? = 0,
+    @SerialName("illust_ai_type")
+    val illustType: Int? = 0,
+    @SerialName("illust_book_style")
+    val illustStyle: Int? = 0,
+    @SerialName("request")
+    val request: String? = "",
+    @SerialName("comment_access_control")
+    val commentAccessControl: Int? = 0,
+    
+
+)
+
+@Serializable
+data class ImageUrls(
+    @SerialName("square_medium")
+    val squareMedium: String? = null,
+    @SerialName("medium")
+    val medium: String? = null,
     @SerialName("large")
-    val large: String? = "",
-    @SerialName("user")
-    val user: User? = User(),
-    @SerialName("tags")
-    val tags: List<Tag>? = listOf(),
-    @SerialName("originals")
-    val originals: List<Original>? = listOf(),
+    val large: String? = null,
 )
 
 @Serializable
 data class User(
     @SerialName("id")
-    val id: Int? = 0,
+    val id: Int? = null,
     @SerialName("name")
     val name: String? = "",
     @SerialName("account")
     val account: String? = "",
-    @SerialName("profileImageUrls")
+    @SerialName("profile_image_urls")
     val profileImageUrls: String? = "",
     @SerialName("is_followed")
     val isFollowed: Boolean? = false,
+    @SerialName("is_accept_request")
+    val isAcceptRequest: Boolean? = false,
 )
 
 @Serializable
 data class Tag(
     @SerialName("name")
     val name: String? = "",
+    @SerialName("translated_name")
+    val translatedName: String? = "",
 )
 
 @Serializable
-data class Original(
-    @SerialName("url")
-    val url: String? = "",
+data class Series(
+    @SerialName("id")
+    val id: Int? = null,
+    @SerialName("title")
+    val title: String? = "",
 )
+
+@Serializable
+data class MetaSinglePage(
+    @SerialName("original_image_url")
+    val originalImageUrl: String? = "",
+)
+
+@Serializable
+data class MetaPage(
+    @SerialName("image_urls")
+    val imageUrls: ImageUrl? = ImageUrl(),
+)
+
+@Serializable
+data class ImageUrl(
+    @SerialName("square_medium")
+    val squareMedium: String? = "",
+    @SerialName("medium")
+    val medium: String? = "",
+    @SerialName("large")
+    val large: String? = "",
+    @SerialName("original")
+    val original: String? = "",
+)
+
+
 
 
 //
