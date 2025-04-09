@@ -4,7 +4,7 @@
 
 
 
-针对[本体](https://github.com/Nekoer/mirai-plugins-pixiv)〇18内容的排行榜和详细数据部分需要充值会员使用进行了调整，换用了[hcyacg-api](https://api.hcyacg.com/#/)文档中免费的排行榜和详细数据接口
+针对[本体](https://github.com/Nekoer/mirai-plugins-pixiv)〇18内容的排行榜和详细数据部分需要充值会员使用进行了调整，换用HiBiapi[https://github.com/mixmoe/HibiAPI]
 
 \#2025.3.31:还没改完
 
