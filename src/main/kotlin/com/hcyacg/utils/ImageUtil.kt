@@ -26,8 +26,15 @@ import kotlin.math.sin
 
 class ImageUtil {
     companion object {
-        private val client = OkHttpClient().newBuilder().connectTimeout(60000, TimeUnit.MILLISECONDS).readTimeout(60000,
-            TimeUnit.MILLISECONDS)
+        private val client = OkHttpClient().newBuilder()
+                                .connectTimeout(20000, TimeUnit.MILLISECONDS)
+                                .readTimeout(20000,TimeUnit.MILLISECONDS)
+                                .apply {
+                                    if(Config.proxy.host.isNotBlank() && Config.proxy.port != -1) {
+                                        val proxy = Proxy(Proxy.Type.HTTP, InetSocketAddress(Config.proxy.host, Config.proxy.port))
+                                        proxy(proxy)
+                                    }
+                                }
         private val headers = Headers.Builder()
             .add(
                 "user-agent",
@@ -39,28 +46,35 @@ class ImageUtil {
         /**
          * 将图片链接读取到内存转换成ByteArrayOutputStream，方便操作
          */
-        fun getImage(imageUri: String, type: CacheUtil.Type): ByteArrayOutputStream {
+        fun getImage(imageUrl: String, type: CacheUtil.Type): ByteArrayOutputStream {
             val infoStream = ByteArrayOutputStream()
             val host = Config.proxy.host
             val port = Config.proxy.port
 
+
+
             try{
 
-                val temp = if(imageUri.indexOf("?") > -1){
-                    imageUri.substring(0, imageUri.indexOf("?")).split("/").last()
+                val temp = if(imageUrl.indexOf("?") > -1){
+                    imageUrl.substring(0, imageUrl.indexOf("?")).split("/").last()
                 }else{
-                    imageUri.split("/").last()
+                    imageUrl.split("/").last()
                 }
 
-//                println("temp: $temp")
-//                println("imageUri: $imageUri")
-                val request = Request.Builder().url(imageUri).headers(headers.build()).get().build()
-                val response: Response  = if (host.isBlank() || port == -1){
-                    client.build().newCall(request).execute()
-                }else{
-                    val proxy = Proxy(Proxy.Type.HTTP, InetSocketAddress(host, port))
-                    client.proxy(proxy).build().newCall(request).execute()
-                }
+
+                val request = Request.Builder()
+                                .url(imageUrl)
+                                .headers(headers.build())
+                                .apply {
+                                    if(type.name=="PIXIV") {
+                                        addHeader("referer", "https://www.pixiv.net/")
+                                    }
+                                }
+                                .build()
+
+
+                val response: Response = client.build().newCall(request).execute()
+
 
                 val `in` = response.body?.byteStream()
 
@@ -81,7 +95,7 @@ class ImageUtil {
 
                 return infoStream
             }catch (e:Exception){
-                logger.warn { "${imageUri}获取失败,请检查网络" }
+                logger.warn { "${imageUrl}获取失败,请检查网络" }
                 e.printStackTrace()
                 return infoStream
             }

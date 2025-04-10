@@ -1,29 +1,9 @@
 package com.hcyacg.entity
 
-import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 
 import kotlinx.serialization.SerialName
-import kotlinx.serialization.descriptors.PrimitiveKind
-import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
 
-/**
- * 一个自定义序列器，用来对付把布尔值加上引号变成字符串的神必api
- **/
-object BooleanFromStringSerializer : KSerializer<Boolean> {
-    override val descriptor = PrimitiveSerialDescriptor("BooleanFromString", PrimitiveKind.STRING)
-
-    override fun deserialize(decoder: Decoder): Boolean {
-        val string = decoder.decodeString()
-        return (string == "true" || string == "True")  // 如果字符串是 "true" 或 "True"，返回 true，否则返回 false
-    }
-
-    override fun serialize(encoder: Encoder, value: Boolean) {
-        encoder.encodeBoolean(value)  // 反序列化
-    }
-}
 
 @Serializable
 data class PixivImageDetail(
@@ -68,13 +48,10 @@ data class PixivImageDetail(
     @SerialName("total_bookmarks")
     val totalBookmarks: Int? = 0,
     @SerialName("is_bookmarked")
-    @Serializable(with = BooleanFromStringSerializer::class)
     val isBookmarked: Boolean? = false,
     @SerialName("visible")
-    @Serializable(with = BooleanFromStringSerializer::class)
     val visible: Boolean? = true,
     @SerialName("is_muted")
-    @Serializable(with = BooleanFromStringSerializer::class)
     val isMuted: Boolean? = false,
     @SerialName("total_comments")
     val totalComments: Int? = 0,
@@ -83,7 +60,7 @@ data class PixivImageDetail(
     @SerialName("illust_book_style")
     val illustStyle: Int? = 0,
     @SerialName("request")
-    val request: String? = "",
+    val request: Request? = Request(),
     @SerialName("comment_access_control")
     val commentAccessControl: Int? = 0,
     
@@ -109,11 +86,17 @@ data class User(
     @SerialName("account")
     val account: String? = "",
     @SerialName("profile_image_urls")
-    val profileImageUrls: String? = "",
+    val profileImageUrls: ProfileImageUrl? = ProfileImageUrl(),
     @SerialName("is_followed")
     val isFollowed: Boolean? = false,
     @SerialName("is_accept_request")
     val isAcceptRequest: Boolean? = false,
+)
+
+@Serializable
+data class ProfileImageUrl(
+    @SerialName("medium")
+    val medium: String? = null,
 )
 
 @Serializable
@@ -135,7 +118,7 @@ data class Series(
 @Serializable
 data class MetaSinglePage(
     @SerialName("original_image_url")
-    val originalImageUrl: String? = "",
+    val originalImageUrl: String? = null,
 )
 
 @Serializable
@@ -156,6 +139,53 @@ data class ImageUrl(
     val original: String? = "",
 )
 
+@Serializable
+data class Request(
+    @SerialName("request_info")
+    val requestInfo: RequestInfo? = RequestInfo(),
+    @SerialName("request_users")
+    val requestUsers: List<RequestUser>? = listOf(),
+    )
+
+@Serializable
+data class RequestInfo(
+    @SerialName("fan_user_id")
+    val fanUserId: Int? = null,
+    @SerialName("collaborate_status")
+    val collaborateStatus: CollaborateStatus? = CollaborateStatus(),
+    @SerialName("role")
+    val role: String? = null,
+)
+
+@Serializable
+data class CollaborateStatus(
+    @SerialName("collaborating")
+    val collaborating: Boolean? = false,
+    @SerialName("collaborate_anonymous_flag")
+    val collaborateAnonymousFlag: Boolean? = false,
+    @SerialName("collaborate_user_samples")
+    val collaborateUserSamples: List<String>? = listOf(),
+)
+
+
+
+@Serializable
+data class RequestUser(
+    @SerialName("id")
+    val id: Int? = null,
+    @SerialName("name")
+    val name: String? = "",
+    @SerialName("account")
+    val account: String? = "",
+    @SerialName("profile_image_urls")
+    val profileImageUrls: ProfileImageUrl? = ProfileImageUrl(),
+    @SerialName("is_followed")
+    val isFollowed: Boolean? = false,
+    @SerialName("is_access_blocking_user")
+    val isAccessBlockingUser: Boolean? = false,
+    @SerialName("is_accept_request")
+    val isAcceptRequest: Boolean? = false,
+)
 
 
 

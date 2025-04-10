@@ -156,8 +156,8 @@ object PicDetails {
                 it.imageUrls?.original?.let { it1 -> originals.add(it1) }
             }
         }
-        else if(null != detail.metaSinglePage){
-            detail.metaSinglePage.originalImageUrl?.let { it -> originals.add(it) }
+        if(null != detail.metaSinglePage?.originalImageUrl){
+            detail.metaSinglePage.originalImageUrl.let { it1 -> originals.add(it1) }
         }
 
 
@@ -183,7 +183,8 @@ object PicDetails {
 
 
 
-            originals.forEach {
+            originals.filterNotNull().forEach {
+
                 val toExternalResource = if (sanityLevel == 6 && Config.lowPoly){
                     val byte = ImageUtil.getImage(it,CacheUtil.Type.PIXIV).toByteArray()
                     LowPoly.generate(
@@ -255,6 +256,7 @@ object PicDetails {
             ImageUtil.getImage(large,CacheUtil.Type.PIXIV).toByteArray().toExternalResource()
         }
 
+
         val imageId: String = toExternalResource.uploadAsImage(event.group).imageId
         withContext(Dispatchers.IO) {
             toExternalResource.close()
@@ -295,7 +297,7 @@ object PicDetails {
         try {
             val data = request(
                 Companion.Method.GET,
-                "127.0.0.1:20010/api/pixiv/illust?id=$id",
+                "http://127.0.0.1:20010/api/pixiv/illust?id=$id",
                 requestBody,
                 headers.build()
             ) ?: return null
